@@ -14,6 +14,8 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import signOut from "../../firebase/auth/signout";
 import { useLocation, useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase/config";
 
 const drawerWidth = 240;
 
@@ -45,10 +47,20 @@ const isActiveRoute = (routeName: string, currentRoute: string) => {
 };
 
 export default function NavigationBar(props: React.PropsWithChildren) {
+  const [userEmail, setUserEmail] = React.useState<string>("");
+
   let location = useLocation();
   const navigate = useNavigate();
 
-  console.log(location);
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserEmail(user.email || "");
+      } else {
+        setUserEmail("");
+      }
+    });
+  }, [location.pathname]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -78,7 +90,7 @@ export default function NavigationBar(props: React.PropsWithChildren) {
         <Toolbar />
         <Divider />
         <List>
-          {routes.map(({ label, path }, index) => (
+          {routes.map(({ label, path }) => (
             <MenuItem selected={isActiveRoute(path, location?.pathname)}>
               <ListItem key={label} disablePadding>
                 <ListItemButton onClick={() => navigate(path)}>
@@ -90,11 +102,28 @@ export default function NavigationBar(props: React.PropsWithChildren) {
           ))}
         </List>
         <Divider />
-        <List>
-          <ListItemButton sx={{ pl: 4 }} onClick={() => signOut()}>
-            <ListItemText primary="Log out" />
-          </ListItemButton>
-        </List>
+        {userEmail && (
+          <List>
+            <MenuItem disabled>
+              <ListItem key={0}>
+                <ListItemText primary={userEmail} />
+              </ListItem>
+            </MenuItem>
+            <MenuItem>
+              <ListItem key={1}>
+                <ListItemButton
+                  sx={{ pl: 4 }}
+                  onClick={() => {
+                    signOut();
+                    navigate("/signin");
+                  }}
+                >
+                  <ListItemText primary="Log out" />
+                </ListItemButton>
+              </ListItem>
+            </MenuItem>
+          </List>
+        )}
       </Drawer>
       <Box
         component="main"
