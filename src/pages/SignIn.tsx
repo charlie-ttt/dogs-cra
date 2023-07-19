@@ -1,5 +1,5 @@
 import React from "react";
-import signUp from "../../src/firebase/auth/signup";
+import signIn from "../../src/firebase/auth/signin";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -7,9 +7,10 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import { FirebaseError } from "@firebase/util";
+import { Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-function SignUp() {
+function SignIn() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -17,7 +18,9 @@ function SignUp() {
 
   const handleForm = async (event: React.FormEvent) => {
     event.preventDefault();
-    const { error } = await signUp(email, password);
+
+    const { error } = await signIn(email, password);
+
     if (error) {
       if (error instanceof FirebaseError) {
         setErrorMessage(error.message);
@@ -26,10 +29,10 @@ function SignUp() {
       }
       return console.log(error);
     }
+
     // else successful
     navigate("/");
   };
-
   return (
     <Container maxWidth="lg">
       <Box
@@ -43,6 +46,9 @@ function SignUp() {
       >
         <form onSubmit={handleForm} className="form">
           <Stack spacing={2} sx={{ width: "100%" }}>
+            <Typography variant="h4" component="h1" textAlign="center">
+              Sign In
+            </Typography>
             <TextField
               fullWidth
               required
@@ -68,7 +74,7 @@ function SignUp() {
                 type="submit"
                 disabled={email === "" || password === ""}
               >
-                Sign up
+                Sign In
               </Button>
             </Box>
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
@@ -79,4 +85,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignIn;
