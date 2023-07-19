@@ -5,13 +5,30 @@ import { red } from "@mui/material/colors";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#556cd6",
+      dark: "#E3960F",
+      main: "#f3b64c",
+      light: "#f1ac34",
+      contrastText: "#171717",
     },
     secondary: {
       main: "#19857b",
     },
     error: {
       main: red.A400,
+    },
+    action: {
+      disabledBackground: "#FDF0DB",
+    },
+  },
+  components: {
+    MuiMenuItem: {
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          ...(ownerState.selected === true && {
+            backgroundColor: "#f3b64c !important",
+          }),
+        }),
+      },
     },
   },
 });
