@@ -1,12 +1,12 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import Main from "./pages/Main";
-import SignUp from "./pages/SignUp";
-import SignIn from "./pages/SignIn";
+import * as React from "react";
+import * as ReactDOM from "react-dom/client";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import NavigationBar from "./components/layout/NavigationBar";
+import Main from "./pages/Main";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import theme from "./theme";
 
 const rootElement = document.getElementById("root");

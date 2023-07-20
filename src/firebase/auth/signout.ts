@@ -1,5 +1,5 @@
+import { signOut as firebaseSignOut, getAuth } from "firebase/auth";
 import firebase_app from "../config";
-import { getAuth, signOut as firebaseSignOut } from "firebase/auth";
 
 const auth = getAuth(firebase_app);
 
