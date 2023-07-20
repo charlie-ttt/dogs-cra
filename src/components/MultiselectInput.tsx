@@ -34,12 +34,10 @@ export default function MultiselectInput({
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-checkbox-label">
-          Select your favorite breeds
-        </InputLabel>
+        <InputLabel id="multiple-checkbox-label">Dog breeds</InputLabel>
         <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
+          labelId="multiple-checkbox-label"
+          id="multiple-checkbox"
           multiple
           value={selected}
           onChange={handleChange}

@@ -1,10 +1,16 @@
+import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import useAxios from "axios-hooks";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import * as React from "react";
 import MultiselectInput from "../components/MultiselectInput";
+import { auth, db } from "../firebase/config";
+
+const apiDogListAllUrl = "https://dog.ceo/api/breeds/list/all";
 
 interface ListAllDogBreedsResponse {
   message: {};
@@ -14,10 +20,16 @@ interface ListAllDogBreedsResponse {
 export default function Main() {
   const [options, setOptions] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState<string[]>([]);
+  const [userId, setUserId] = React.useState<string>("");
 
-  const [{ data, loading }] = useAxios<ListAllDogBreedsResponse>(
-    "https://dog.ceo/api/breeds/list/all"
-  );
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      user && setUserId(user.uid);
+    });
+  }, [location.pathname]);
+
+  const [{ data, loading }] =
+    useAxios<ListAllDogBreedsResponse>(apiDogListAllUrl);
 
   React.useEffect(() => {
     if (data) {
@@ -32,8 +44,7 @@ export default function Main() {
     } = event;
 
     setSelected(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+      typeof value === "string" ? value.split(",") : value // On autofill we get a stringified value.
     );
   }
 
@@ -41,7 +52,7 @@ export default function Main() {
     <Container maxWidth="sm">
       <Box sx={{ my: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Welcome to Dog App
+          Select Your Favorite Dog Breeds
         </Typography>
         {loading ? (
           <>loading...</>
@@ -53,7 +64,30 @@ export default function Main() {
             maxlimit={3}
           />
         )}
+        <Button
+          onClick={() => {
+            handleSave({ userId: userId, breeds: selected });
+          }}
+        >
+          SAVE
+        </Button>
       </Box>
     </Container>
   );
+}
+
+async function handleSave({
+  userId,
+  breeds,
+}: {
+  userId: string;
+  breeds: string[];
+}) {
+  try {
+    await setDoc(doc(db, "users", userId), {
+      favorite_breeds: breeds,
+    });
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
 }
