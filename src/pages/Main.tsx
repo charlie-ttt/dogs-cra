@@ -7,8 +7,10 @@ import useAxios from "axios-hooks";
 import * as React from "react";
 import MultiselectInput from "../components/MultiselectInput";
 import { useAuthContext } from "../firebase/auth/AuthContext";
-import { updateFavoriteBreedAction } from "../firebase/firestore-action";
-
+import {
+  getUserDataAction,
+  updateFavoriteBreedAction,
+} from "../firebase/firestore-action";
 const apiDogListAllUrl = "https://dog.ceo/api/breeds/list/all";
 
 interface ApiListAllDogBreedsResponse {
@@ -30,6 +32,18 @@ export default function Main() {
       setOptions(Object.keys(message));
     }
   }, [data]);
+
+  // fetch user fav breeds
+  React.useEffect(() => {
+    async function fetchFavoriteBreeds() {
+      if (!user) return;
+      const data = await getUserDataAction(user.uid);
+      if (data["favorite_breeds"]) {
+        setSelected(data["favorite_breeds"]);
+      }
+    }
+    fetchFavoriteBreeds();
+  }, []);
 
   function handleChange(event: SelectChangeEvent<string[]>) {
     const {

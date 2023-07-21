@@ -26,13 +26,13 @@ interface DogBreedImages {
 function Feed() {
   const user = useAuthContext();
 
-  const [breeds, setBreeds] = React.useState<string[]>([]);
+  const [favBreeds, setFavBreeds] = React.useState<string[]>([]);
   const [likedPhotos, setLikedPhotos] = React.useState<LikedPhotos>({});
   const [dogBreedImages, setDogBreedImages] = React.useState<DogBreedImages[]>(
     []
   );
 
-  console.log("breeds", breeds);
+  console.log("breeds", favBreeds);
   console.log("likedPhotos:", likedPhotos);
 
   // fetch user fav breeds
@@ -41,7 +41,7 @@ function Feed() {
       if (!user) return;
       const data = await getUserDataAction(user.uid);
       if (data["favorite_breeds"]) {
-        setBreeds(data["favorite_breeds"]);
+        setFavBreeds(data["favorite_breeds"]);
       }
       if (data["liked_photos"]) {
         setLikedPhotos(data["liked_photos"] || {});
@@ -52,10 +52,10 @@ function Feed() {
 
   // fetch images based on user's fav breeds
   React.useEffect(() => {
-    if (breeds.length) {
+    if (favBreeds.length) {
       let promises = [];
-      for (let i = 0; i < breeds.length; i++) {
-        const breedname = breeds[i];
+      for (let i = 0; i < favBreeds.length; i++) {
+        const breedname = favBreeds[i];
         promises.push(
           axios
             .get<ApiListDogImagesByBreedsResponse>(
@@ -74,7 +74,7 @@ function Feed() {
       }
       Promise.all(promises).then(() => console.log("all done"));
     }
-  }, [breeds]);
+  }, [favBreeds]);
 
   async function handleLikePhoto(url: string, userId: string) {
     setLikedPhotos({ ...likedPhotos, [url]: new Date().toISOString() });
@@ -102,7 +102,7 @@ function Feed() {
               View Feed of Your Favorite Breeds
             </Typography>
             <Stack direction="row" spacing={1}>
-              {breeds.map((n) => (
+              {favBreeds.map((n) => (
                 <Chip label={n} />
               ))}
             </Stack>
