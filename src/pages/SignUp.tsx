@@ -1,13 +1,14 @@
-import React from "react";
-import signUp from "../../src/firebase/auth/signup";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
-import Stack from "@mui/material/Stack";
 import { FirebaseError } from "@firebase/util";
+import { Typography } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import signUp from "../../src/firebase/auth/signup";
 
 function SignUp() {
   const [email, setEmail] = React.useState("");
@@ -17,7 +18,9 @@ function SignUp() {
 
   const handleForm = async (event: React.FormEvent) => {
     event.preventDefault();
+
     const { error } = await signUp(email, password);
+
     if (error) {
       if (error instanceof FirebaseError) {
         setErrorMessage(error.message);
@@ -43,6 +46,9 @@ function SignUp() {
       >
         <form onSubmit={handleForm} className="form">
           <Stack spacing={2} sx={{ width: "100%" }}>
+            <Typography variant="h4" component="h1" textAlign="center">
+              Sign Up
+            </Typography>
             <TextField
               fullWidth
               required

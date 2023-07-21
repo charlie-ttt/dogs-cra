@@ -1,21 +1,20 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
-import signOut from "../../firebase/auth/signout";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebase/config";
+import { useAuthContext } from "../../firebase/auth/AuthContext";
+import signOut from "../../firebase/auth/signout";
 
 const drawerWidth = 240;
 
@@ -47,20 +46,9 @@ const isActiveRoute = (routeName: string, currentRoute: string) => {
 };
 
 export default function NavigationBar(props: React.PropsWithChildren) {
-  const [userEmail, setUserEmail] = React.useState<string>("");
-
+  const user = useAuthContext();
   let location = useLocation();
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserEmail(user.email || "");
-      } else {
-        setUserEmail("");
-      }
-    });
-  }, [location.pathname]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -102,11 +90,11 @@ export default function NavigationBar(props: React.PropsWithChildren) {
           ))}
         </List>
         <Divider />
-        {userEmail && (
+        {user && (
           <List>
             <MenuItem disabled>
               <ListItem key={0}>
-                <ListItemText primary={userEmail} />
+                <ListItemText primary={user.email} />
               </ListItem>
             </MenuItem>
             <MenuItem>
