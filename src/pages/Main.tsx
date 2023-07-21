@@ -4,11 +4,10 @@ import Container from "@mui/material/Container";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import useAxios from "axios-hooks";
-import { doc, setDoc } from "firebase/firestore";
 import * as React from "react";
 import MultiselectInput from "../components/MultiselectInput";
 import { useAuthContext } from "../firebase/auth/AuthContext";
-import { db } from "../firebase/config";
+import { handleSave } from "../firebase/firestore-action";
 
 const apiDogListAllUrl = "https://dog.ceo/api/breeds/list/all";
 
@@ -70,20 +69,4 @@ export default function Main() {
       </Box>
     </Container>
   );
-}
-
-async function handleSave({
-  userId,
-  breeds,
-}: {
-  userId: string;
-  breeds: string[];
-}) {
-  try {
-    await setDoc(doc(db, "users", userId), {
-      favorite_breeds: breeds,
-    });
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
 }

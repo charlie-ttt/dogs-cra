@@ -4,18 +4,25 @@ import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
 import * as React from "react";
 
+export interface ImageData {
+  url: string;
+  title: string;
+}
+
 export default function CardImage({
   url,
   title,
+  onClick,
 }: {
   url: string;
   title: string;
+  onClick: () => void;
 }) {
   return (
     <Card sx={{ width: 300, margin: "1rem" }}>
       <CardMedia component="img" height="194" image={url} alt={title} />
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
+        <IconButton aria-label="add to favorites" onClick={onClick}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

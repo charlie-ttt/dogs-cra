@@ -4,11 +4,14 @@ import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { doc, getDoc } from "firebase/firestore";
 import * as React from "react";
-import CardList, { ImageData } from "../components/CardList";
+import CardImage, { ImageData } from "../components/CardImage";
 import { useAuthContext } from "../firebase/auth/AuthContext";
-import { db } from "../firebase/config";
+import {
+  LikedPhotos,
+  getUserData,
+  likePhoto,
+} from "../firebase/firestore-action";
 
 interface ApiListDogImagesByBreedsResponse {
   message: string[];
@@ -24,6 +27,8 @@ function Feed() {
   const user = useAuthContext();
 
   const [breeds, setBreeds] = React.useState<string[]>([]);
+  const [likedPhotos, setLikedPhotos] = React.useState<LikedPhotos>({});
+  console.log("🚀 ~ Feed ~ likedPhotos:", likedPhotos);
   const [dogBreedImages, setDogBreedImages] = React.useState<DogBreedImages[]>(
     []
   );
@@ -31,15 +36,11 @@ function Feed() {
   // fetch user fav breeds
   React.useEffect(() => {
     async function fetchFavoriteBreeds() {
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          setBreeds(docSnap.data().favorite_breeds);
-          console.log("Document data:", docSnap.data());
-        }
-      }
+      if (!user) return;
+      const data = await getUserData(user.uid);
+      console.log("data: ", data);
+      setBreeds(data["favorite_breeds"]);
+      setLikedPhotos(data["liked_photos"]);
     }
     fetchFavoriteBreeds();
   }, []);
@@ -91,7 +92,29 @@ function Feed() {
               url: url,
               title: `${breedName}-${index}`,
             }));
-            return <CardList images={imagesData} />;
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  flex: "wrap",
+                  flexDirection: "row",
+                  width: "100%",
+                  mb: "2rem",
+                }}
+              >
+                {imagesData.map(({ url, title }) => (
+                  <CardImage
+                    url={url}
+                    title={title}
+                    onClick={() => {
+                      if (user) {
+                        likePhoto(user.uid, { hello: "123" });
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
+            );
           })}
       </Box>
     </Container>
