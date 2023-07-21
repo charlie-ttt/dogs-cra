@@ -12,7 +12,7 @@ import { db } from "../firebase/config";
 
 const apiDogListAllUrl = "https://dog.ceo/api/breeds/list/all";
 
-interface ListAllDogBreedsResponse {
+interface ApiListAllDogBreedsResponse {
   message: {};
   status: string;
 }
@@ -23,7 +23,7 @@ export default function Main() {
   const user = useAuthContext();
 
   const [{ data, loading }] =
-    useAxios<ListAllDogBreedsResponse>(apiDogListAllUrl);
+    useAxios<ApiListAllDogBreedsResponse>(apiDogListAllUrl);
 
   React.useEffect(() => {
     if (data) {
