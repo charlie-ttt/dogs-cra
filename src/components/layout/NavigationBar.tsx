@@ -35,9 +35,14 @@ const routes = [
     path: "/signup",
   },
   {
-    id: 2,
+    id: 4,
     label: "Sign In",
     path: "/signin",
+  },
+  {
+    id: 5,
+    label: "My Liked Photos",
+    path: "/my-liked-photos",
   },
 ];
 
@@ -115,7 +120,12 @@ export default function NavigationBar(props: React.PropsWithChildren) {
       </Drawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3, mt: 10 }}
+        sx={{
+          flexGrow: 1,
+          bgcolor: "background.default",
+          p: 3,
+          mt: 5,
+        }}
       >
         {props.children}
       </Box>

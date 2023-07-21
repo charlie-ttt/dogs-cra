@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import useAxios from "axios-hooks";
@@ -56,31 +55,36 @@ export default function Main() {
   }
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Select Your Favorite Dog Breeds
-        </Typography>
-        {loading ? (
-          <>loading...</>
-        ) : (
-          <MultiselectInput
-            allOptions={options}
-            selected={selected}
-            handleChange={handleChange}
-            maxlimit={3}
-          />
-        )}
+    <Box sx={{ mt: 3 }}>
+      <Typography variant="h5" component="h1" gutterBottom sx={{ mb: 8 }}>
+        Select Your Favorite Dog Breeds
+      </Typography>
+      {loading ? (
+        <>loading...</>
+      ) : (
+        <MultiselectInput
+          allOptions={options}
+          selected={selected}
+          handleChange={handleChange}
+          maxlimit={3}
+        />
+      )}
+      <Box sx={{ mt: 4, textAlign: "center" }}>
         {user && (
           <Button
+            variant="contained"
+            sx={{ textTransform: "none" }}
             onClick={() => {
-              updateFavoriteBreedAction({ userId: user.uid, breeds: selected });
+              updateFavoriteBreedAction({
+                userId: user.uid,
+                breeds: selected,
+              });
             }}
           >
-            SAVE
+            Save
           </Button>
         )}
       </Box>
-    </Container>
+    </Box>
   );
 }

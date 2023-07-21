@@ -17,7 +17,7 @@ export default function CardImage({
 }: {
   url: string;
   title: string;
-  onClick: () => void;
+  onClick?: () => void;
   liked: boolean;
 }) {
   return (

@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
@@ -31,9 +30,6 @@ function Feed() {
   const [dogBreedImages, setDogBreedImages] = React.useState<DogBreedImages[]>(
     []
   );
-
-  console.log("breeds", favBreeds);
-  console.log("likedPhotos:", likedPhotos);
 
   // fetch user fav breeds
   React.useEffect(() => {
@@ -94,11 +90,11 @@ function Feed() {
   }
 
   return (
-    <Container>
+    <>
       {user && (
         <>
-          <Box sx={{ my: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h5" component="h1" gutterBottom sx={{ mb: 8 }}>
               View Feed of Your Favorite Breeds
             </Typography>
             <Stack direction="row" spacing={1}>
@@ -150,7 +146,7 @@ function Feed() {
           </Box>
         </>
       )}
-    </Container>
+    </>
   );
 }
 
