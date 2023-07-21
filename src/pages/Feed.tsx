@@ -9,8 +9,8 @@ import CardImage, { ImageData } from "../components/CardImage";
 import { useAuthContext } from "../firebase/auth/AuthContext";
 import {
   LikedPhotos,
-  getUserData,
-  likePhoto,
+  getUserDataAction,
+  updatePhotoAction,
 } from "../firebase/firestore-action";
 
 interface ApiListDogImagesByBreedsResponse {
@@ -28,19 +28,24 @@ function Feed() {
 
   const [breeds, setBreeds] = React.useState<string[]>([]);
   const [likedPhotos, setLikedPhotos] = React.useState<LikedPhotos>({});
-  console.log("🚀 ~ Feed ~ likedPhotos:", likedPhotos);
   const [dogBreedImages, setDogBreedImages] = React.useState<DogBreedImages[]>(
     []
   );
+
+  console.log("breeds", breeds);
+  console.log("likedPhotos:", likedPhotos);
 
   // fetch user fav breeds
   React.useEffect(() => {
     async function fetchFavoriteBreeds() {
       if (!user) return;
-      const data = await getUserData(user.uid);
-      console.log("data: ", data);
-      setBreeds(data["favorite_breeds"]);
-      setLikedPhotos(data["liked_photos"]);
+      const data = await getUserDataAction(user.uid);
+      if (data["favorite_breeds"]) {
+        setBreeds(data["favorite_breeds"]);
+      }
+      if (data["liked_photos"]) {
+        setLikedPhotos(data["liked_photos"] || {});
+      }
     }
     fetchFavoriteBreeds();
   }, []);
@@ -71,52 +76,80 @@ function Feed() {
     }
   }, [breeds]);
 
-  console.log("dogBreedImages", dogBreedImages);
+  async function handleLikePhoto(url: string, userId: string) {
+    setLikedPhotos({ ...likedPhotos, [url]: new Date().toISOString() });
+    await updatePhotoAction(userId, {
+      ...likedPhotos,
+      [url]: new Date().toISOString(),
+    });
+  }
+
+  async function handleUnlikePhoto(url: string, userId: string) {
+    const newState = { ...likedPhotos };
+    delete newState[url];
+    console.log("likedPhotos:", likedPhotos);
+    console.log("newState:", newState);
+    setLikedPhotos(newState);
+    await updatePhotoAction(userId, newState);
+  }
 
   return (
     <Container>
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          View Feed of Your Favorite Breeds
-        </Typography>
-        <Stack direction="row" spacing={1}>
-          {breeds.map((n) => (
-            <Chip label={n} />
-          ))}
-        </Stack>
-      </Box>
-      <Box>
-        {dogBreedImages.length &&
-          dogBreedImages.map(({ breedName, images }) => {
-            const imagesData: ImageData[] = images.map((url, index) => ({
-              url: url,
-              title: `${breedName}-${index}`,
-            }));
-            return (
-              <Box
-                sx={{
-                  display: "flex",
-                  flex: "wrap",
-                  flexDirection: "row",
-                  width: "100%",
-                  mb: "2rem",
-                }}
-              >
-                {imagesData.map(({ url, title }) => (
-                  <CardImage
-                    url={url}
-                    title={title}
-                    onClick={() => {
-                      if (user) {
-                        likePhoto(user.uid, { hello: "123" });
-                      }
+      {user && (
+        <>
+          <Box sx={{ my: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              View Feed of Your Favorite Breeds
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              {breeds.map((n) => (
+                <Chip label={n} />
+              ))}
+            </Stack>
+          </Box>
+          <Box>
+            {dogBreedImages.length > 0 &&
+              dogBreedImages.map(({ breedName, images }) => {
+                const imagesData: ImageData[] = images.map((url, index) => ({
+                  url: url,
+                  title: `${breedName}-${index}`,
+                }));
+
+                return (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flex: "wrap",
+                      flexDirection: "row",
+                      width: "100%",
+                      mb: "2rem",
                     }}
-                  />
-                ))}
-              </Box>
-            );
-          })}
-      </Box>
+                  >
+                    {imagesData.map(({ url, title }) => {
+                      const isLiked = likedPhotos[url] !== undefined;
+
+                      return (
+                        <CardImage
+                          url={url}
+                          title={title}
+                          liked={isLiked}
+                          onClick={() => {
+                            if (isLiked) {
+                              handleUnlikePhoto(url, user.uid);
+                            } else {
+                              handleLikePhoto(url, user.uid);
+                              //
+                            }
+                          }}
+                        />
+                      );
+                    })}
+                  </Box>
+                );
+              })}
+          </Box>
+        </>
+      )}
     </Container>
   );
 }

@@ -1,25 +1,21 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./config";
 
 export interface LikedPhotos {
   [key: string]: string;
 }
 
-export async function likePhoto(userId: string, photos: LikedPhotos) {
+export async function updatePhotoAction(userId: string, photos: LikedPhotos) {
   try {
-    await setDoc(
-      doc(db, "users", userId),
-      {
-        liked_photos: photos,
-      },
-      { merge: true }
-    );
+    await updateDoc(doc(db, "users", userId), {
+      liked_photos: photos,
+    });
   } catch (e) {
-    console.error("Error merging document: ", e);
+    console.error("Error update liked_photos: ", e);
   }
 }
 
-export async function handleSave({
+export async function updateFavoriteBreedAction({
   userId,
   breeds,
 }: {
@@ -27,7 +23,7 @@ export async function handleSave({
   breeds: string[];
 }) {
   try {
-    await setDoc(doc(db, "users", userId), {
+    await updateDoc(doc(db, "users", userId), {
       favorite_breeds: breeds,
     });
   } catch (e) {
@@ -35,7 +31,7 @@ export async function handleSave({
   }
 }
 
-export async function getUserData(userId: string) {
+export async function getUserDataAction(userId: string) {
   const docRef = doc(db, "users", userId);
   const docSnap = await getDoc(docRef);
 

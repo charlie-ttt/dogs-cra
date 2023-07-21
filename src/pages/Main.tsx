@@ -7,7 +7,7 @@ import useAxios from "axios-hooks";
 import * as React from "react";
 import MultiselectInput from "../components/MultiselectInput";
 import { useAuthContext } from "../firebase/auth/AuthContext";
-import { handleSave } from "../firebase/firestore-action";
+import { updateFavoriteBreedAction } from "../firebase/firestore-action";
 
 const apiDogListAllUrl = "https://dog.ceo/api/breeds/list/all";
 
@@ -60,7 +60,7 @@ export default function Main() {
         {user && (
           <Button
             onClick={() => {
-              handleSave({ userId: user.uid, breeds: selected });
+              updateFavoriteBreedAction({ userId: user.uid, breeds: selected });
             }}
           >
             SAVE
