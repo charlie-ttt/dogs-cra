@@ -1,9 +1,12 @@
 import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { doc, getDoc } from "firebase/firestore";
 import * as React from "react";
+import CardList, { ImageData } from "../components/CardList";
 import { useAuthContext } from "../firebase/auth/AuthContext";
 import { db } from "../firebase/config";
 
@@ -50,7 +53,7 @@ function Feed() {
         promises.push(
           axios
             .get<ApiListDogImagesByBreedsResponse>(
-              `https://dog.ceo/api/breed/${breedname}/images/random/4`
+              `https://dog.ceo/api/breed/${breedname}/images/random/3`
             )
             .then((response) => {
               setDogBreedImages((prev) => [
@@ -70,12 +73,26 @@ function Feed() {
   console.log("dogBreedImages", dogBreedImages);
 
   return (
-    <Container maxWidth="sm">
+    <Container>
       <Box sx={{ my: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           View Feed of Your Favorite Breeds
         </Typography>
-        {breeds.join(", ")}
+        <Stack direction="row" spacing={1}>
+          {breeds.map((n) => (
+            <Chip label={n} />
+          ))}
+        </Stack>
+      </Box>
+      <Box>
+        {dogBreedImages.length &&
+          dogBreedImages.map(({ breedName, images }) => {
+            const imagesData: ImageData[] = images.map((url, index) => ({
+              url: url,
+              title: `${breedName}-${index}`,
+            }));
+            return <CardList images={imagesData} />;
+          })}
       </Box>
     </Container>
   );
