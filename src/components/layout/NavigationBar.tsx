@@ -18,34 +18,6 @@ import signOut from "../../firebase/auth/signout";
 
 const drawerWidth = 240;
 
-const routes = [
-  {
-    id: 1,
-    label: "All Dogs",
-    path: "/",
-  },
-  {
-    id: 2,
-    label: "View Feed",
-    path: "/feed",
-  },
-  {
-    id: 3,
-    label: "Sign Up",
-    path: "/signup",
-  },
-  {
-    id: 4,
-    label: "Sign In",
-    path: "/signin",
-  },
-  {
-    id: 5,
-    label: "My Liked Photos",
-    path: "/my-liked-photos",
-  },
-];
-
 const isActiveRoute = (routeName: string, currentRoute: string) => {
   return routeName === currentRoute;
 };
@@ -54,6 +26,8 @@ export default function NavigationBar(props: React.PropsWithChildren) {
   const user = useAuthContext();
   let location = useLocation();
   const navigate = useNavigate();
+
+  const activeRoutes = getActiveRoutes(user !== null);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -83,7 +57,7 @@ export default function NavigationBar(props: React.PropsWithChildren) {
         <Toolbar />
         <Divider />
         <List>
-          {routes.map(({ label, path }) => (
+          {activeRoutes.map(({ label, path }) => (
             <MenuItem selected={isActiveRoute(path, location?.pathname)}>
               <ListItem key={label} disablePadding>
                 <ListItemButton onClick={() => navigate(path)}>
@@ -131,4 +105,39 @@ export default function NavigationBar(props: React.PropsWithChildren) {
       </Box>
     </Box>
   );
+}
+
+function getActiveRoutes(loggedIn: boolean) {
+  if (loggedIn) {
+    return [
+      {
+        id: 1,
+        label: "All Dogs",
+        path: "/",
+      },
+      {
+        id: 2,
+        label: "View Feed",
+        path: "/feed",
+      },
+      {
+        id: 3,
+        label: "My Liked Photos",
+        path: "/my-liked-photos",
+      },
+    ];
+  } else {
+    return [
+      {
+        id: 1,
+        label: "Sign Up",
+        path: "/signup",
+      },
+      {
+        id: 2,
+        label: "Sign In",
+        path: "/signin",
+      },
+    ];
+  }
 }
