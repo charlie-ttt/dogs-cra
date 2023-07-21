@@ -4,11 +4,11 @@ import Container from "@mui/material/Container";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import useAxios from "axios-hooks";
-import { onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import * as React from "react";
 import MultiselectInput from "../components/MultiselectInput";
-import { auth, db } from "../firebase/config";
+import { useAuthContext } from "../firebase/auth/AuthContext";
+import { db } from "../firebase/config";
 
 const apiDogListAllUrl = "https://dog.ceo/api/breeds/list/all";
 
@@ -20,13 +20,7 @@ interface ListAllDogBreedsResponse {
 export default function Main() {
   const [options, setOptions] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState<string[]>([]);
-  const [userId, setUserId] = React.useState<string>("");
-
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      user && setUserId(user.uid);
-    });
-  }, [location.pathname]);
+  const user = useAuthContext();
 
   const [{ data, loading }] =
     useAxios<ListAllDogBreedsResponse>(apiDogListAllUrl);
@@ -64,13 +58,15 @@ export default function Main() {
             maxlimit={3}
           />
         )}
-        <Button
-          onClick={() => {
-            handleSave({ userId: userId, breeds: selected });
-          }}
-        >
-          SAVE
-        </Button>
+        {user && (
+          <Button
+            onClick={() => {
+              handleSave({ userId: user.uid, breeds: selected });
+            }}
+          >
+            SAVE
+          </Button>
+        )}
       </Box>
     </Container>
   );
