@@ -11,11 +11,10 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { onAuthStateChanged } from "firebase/auth";
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../firebase/auth/AuthContext";
 import signOut from "../../firebase/auth/signout";
-import { auth } from "../../firebase/config";
 
 const drawerWidth = 240;
 
@@ -47,20 +46,9 @@ const isActiveRoute = (routeName: string, currentRoute: string) => {
 };
 
 export default function NavigationBar(props: React.PropsWithChildren) {
-  const [userEmail, setUserEmail] = React.useState<string>("");
-
+  const user = useAuthContext();
   let location = useLocation();
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserEmail(user.email || "");
-      } else {
-        setUserEmail("");
-      }
-    });
-  }, [location.pathname]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -102,11 +90,11 @@ export default function NavigationBar(props: React.PropsWithChildren) {
           ))}
         </List>
         <Divider />
-        {userEmail && (
+        {user && (
           <List>
             <MenuItem disabled>
               <ListItem key={0}>
-                <ListItemText primary={userEmail} />
+                <ListItemText primary={user.email} />
               </ListItem>
             </MenuItem>
             <MenuItem>
