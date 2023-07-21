@@ -5,16 +5,6 @@ import CardImage from "../components/CardImage";
 import { useAuthContext } from "../firebase/auth/AuthContext";
 import { LikedPhotos, getUserDataAction } from "../firebase/firestore-action";
 
-interface ApiListDogImagesByBreedsResponse {
-  message: string[];
-  status: string;
-}
-
-interface DogBreedImages {
-  breedName: string;
-  images: string[];
-}
-
 function MyLikedPhotos() {
   const user = useAuthContext();
 
@@ -49,7 +39,14 @@ function MyLikedPhotos() {
             }}
           >
             {Object.keys(likedPhotos).map((url) => {
-              return <CardImage url={url} title={url} liked={true} />;
+              return (
+                <CardImage
+                  url={url}
+                  title={url}
+                  liked={true}
+                  showButton={false}
+                />
+              );
             })}
           </Box>
         </Box>

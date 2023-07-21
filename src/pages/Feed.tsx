@@ -129,6 +129,7 @@ function Feed() {
                           url={url}
                           title={title}
                           liked={isLiked}
+                          showButton
                           onClick={() => {
                             if (isLiked) {
                               handleUnlikePhoto(url, user.uid);
