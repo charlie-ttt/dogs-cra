@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import CardImage, { ImageData } from "../components/CardImage";
 import { useAuthContext } from "../firebase/auth/AuthContext";
 import {
@@ -23,13 +24,20 @@ interface DogBreedImages {
 }
 
 function Feed() {
-  const user = useAuthContext();
-
   const [favBreeds, setFavBreeds] = React.useState<string[]>([]);
   const [likedPhotos, setLikedPhotos] = React.useState<LikedPhotos>({});
   const [dogBreedImages, setDogBreedImages] = React.useState<DogBreedImages[]>(
     []
   );
+  const user = useAuthContext();
+  const navigate = useNavigate();
+
+  // redirect to signin page for unauthorized user
+  React.useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+    }
+  }, []);
 
   // fetch user fav breeds
   React.useEffect(() => {

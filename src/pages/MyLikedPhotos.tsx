@@ -1,14 +1,22 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import CardImage from "../components/CardImage";
 import { useAuthContext } from "../firebase/auth/AuthContext";
 import { LikedPhotos, getUserDataAction } from "../firebase/firestore-action";
 
 function MyLikedPhotos() {
-  const user = useAuthContext();
-
   const [likedPhotos, setLikedPhotos] = React.useState<LikedPhotos>({});
+  const user = useAuthContext();
+  const navigate = useNavigate();
+
+  // redirect to signin page for unauthorized user
+  React.useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+    }
+  }, []);
 
   // fetch user fav breeds
   React.useEffect(() => {

@@ -5,6 +5,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Typography from "@mui/material/Typography";
 import useAxios from "axios-hooks";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import MultiselectInput from "../components/MultiselectInput";
 import SnackBarAlert from "../components/SnackBarAlert";
 import { useAuthContext } from "../firebase/auth/AuthContext";
@@ -26,6 +27,14 @@ export default function Main() {
   const [options, setOptions] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState<string[]>([]);
   const user = useAuthContext();
+  const navigate = useNavigate();
+
+  // redirect to signin page for unauthorized user
+  React.useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+    }
+  }, []);
 
   const [{ data, loading }] =
     useAxios<ApiListAllDogBreedsResponse>(apiDogListAllUrl);
