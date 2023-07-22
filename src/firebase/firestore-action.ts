@@ -16,20 +16,26 @@ export async function updatePhotoAction(userId: string, photos: LikedPhotos) {
   }
 }
 
+interface UpdateFavoriteBreedActionResponse {
+  error: unknown;
+}
+
 export async function updateFavoriteBreedAction({
   userId,
   breeds,
 }: {
   userId: string;
   breeds: string[];
-}) {
+}): Promise<UpdateFavoriteBreedActionResponse> {
+  let error = null;
   try {
     await updateDoc(doc(db, "users", userId), {
       favorite_breeds: breeds,
     });
   } catch (e) {
-    console.error("Error saving favorites: ", e);
+    error = e;
   }
+  return { error };
 }
 
 interface CreateUserActionResponse {
