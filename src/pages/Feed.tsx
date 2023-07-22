@@ -68,7 +68,7 @@ function Feed() {
             })
         );
       }
-      Promise.all(promises).then(() => console.log("all done"));
+      Promise.all(promises).then(() => {});
     }
   }, [favBreeds]);
 
@@ -83,8 +83,6 @@ function Feed() {
   async function handleUnlikePhoto(url: string, userId: string) {
     const newState = { ...likedPhotos };
     delete newState[url];
-    console.log("likedPhotos:", likedPhotos);
-    console.log("newState:", newState);
     setLikedPhotos(newState);
     await updatePhotoAction(userId, newState);
   }
