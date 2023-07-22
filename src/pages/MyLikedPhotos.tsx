@@ -49,6 +49,7 @@ function MyLikedPhotos() {
             {Object.keys(likedPhotos).map((url) => {
               return (
                 <CardImage
+                  key={url}
                   url={url}
                   title={url}
                   liked={true}

@@ -105,7 +105,7 @@ function Feed() {
             </Typography>
             <Stack direction="row" spacing={1}>
               {favBreeds.map((n) => (
-                <Chip label={n} />
+                <Chip key={n} label={n} />
               ))}
             </Stack>
           </Box>
@@ -119,6 +119,7 @@ function Feed() {
 
                 return (
                   <Box
+                    key={breedName}
                     sx={{
                       display: "flex",
                       flex: "wrap",
@@ -132,6 +133,7 @@ function Feed() {
 
                       return (
                         <CardImage
+                          key={url}
                           url={url}
                           title={title}
                           liked={isLiked}
@@ -141,7 +143,6 @@ function Feed() {
                               handleUnlikePhoto(url, user.uid);
                             } else {
                               handleLikePhoto(url, user.uid);
-                              //
                             }
                           }}
                         />
