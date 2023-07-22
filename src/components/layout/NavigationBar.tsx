@@ -57,7 +57,10 @@ export default function NavigationBar(props: React.PropsWithChildren) {
         <Divider />
         <List>
           {activeRoutes.map(({ label, path }) => (
-            <MenuItem selected={isActiveRoute(path, location?.pathname)}>
+            <MenuItem
+              key={label}
+              selected={isActiveRoute(path, location?.pathname)}
+            >
               <ListItem key={label}>
                 <ListItemButton onClick={() => navigate(path)}>
                   <ListItemText primary={label} />
