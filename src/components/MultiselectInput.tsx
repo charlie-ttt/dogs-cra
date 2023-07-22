@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -32,8 +33,8 @@ export default function MultiselectInput({
   maxlimit,
 }: MultiselectInputProps) {
   return (
-    <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
+    <Box sx={{ textAlign: "center" }}>
+      <FormControl sx={{ m: 1, width: "500px" }}>
         <InputLabel id="multiple-checkbox-label">Dog breeds</InputLabel>
         <Select
           labelId="multiple-checkbox-label"
@@ -59,6 +60,6 @@ export default function MultiselectInput({
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Box>
   );
 }

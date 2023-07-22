@@ -1,4 +1,3 @@
-import { FirebaseError } from "@firebase/util";
 import { Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -9,6 +8,10 @@ import TextField from "@mui/material/TextField";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import signUp from "../../src/firebase/auth/signup";
+import {
+  createUserAction,
+  formatFirebaseError,
+} from "../../src/firebase/firestore-action";
 
 function SignUp() {
   const [email, setEmail] = React.useState("");
@@ -19,16 +22,23 @@ function SignUp() {
   const handleForm = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const { error } = await signUp(email, password);
+    const { result, error: signupError } = await signUp(email, password);
 
-    if (error) {
-      if (error instanceof FirebaseError) {
-        setErrorMessage(error.message);
-      } else {
-        setErrorMessage("something went wrong. please try again later");
-      }
-      return console.log(error);
+    if (signupError) {
+      setErrorMessage(formatFirebaseError(signupError));
+      return;
     }
+
+    if (result && result.user) {
+      const { error: createUserError } = await createUserAction({
+        userId: result.user.uid,
+      });
+      if (createUserError) {
+        setErrorMessage(formatFirebaseError(createUserError));
+        return;
+      }
+    }
+
     // else successful
     navigate("/");
   };

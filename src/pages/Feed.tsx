@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
@@ -31,9 +30,6 @@ function Feed() {
   const [dogBreedImages, setDogBreedImages] = React.useState<DogBreedImages[]>(
     []
   );
-
-  console.log("breeds", favBreeds);
-  console.log("likedPhotos:", likedPhotos);
 
   // fetch user fav breeds
   React.useEffect(() => {
@@ -72,7 +68,7 @@ function Feed() {
             })
         );
       }
-      Promise.all(promises).then(() => console.log("all done"));
+      Promise.all(promises).then(() => {});
     }
   }, [favBreeds]);
 
@@ -87,18 +83,16 @@ function Feed() {
   async function handleUnlikePhoto(url: string, userId: string) {
     const newState = { ...likedPhotos };
     delete newState[url];
-    console.log("likedPhotos:", likedPhotos);
-    console.log("newState:", newState);
     setLikedPhotos(newState);
     await updatePhotoAction(userId, newState);
   }
 
   return (
-    <Container>
+    <>
       {user && (
         <>
-          <Box sx={{ my: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h5" component="h1" gutterBottom sx={{ mb: 8 }}>
               View Feed of Your Favorite Breeds
             </Typography>
             <Stack direction="row" spacing={1}>
@@ -133,6 +127,7 @@ function Feed() {
                           url={url}
                           title={title}
                           liked={isLiked}
+                          showButton
                           onClick={() => {
                             if (isLiked) {
                               handleUnlikePhoto(url, user.uid);
@@ -150,7 +145,7 @@ function Feed() {
           </Box>
         </>
       )}
-    </Container>
+    </>
   );
 }
 

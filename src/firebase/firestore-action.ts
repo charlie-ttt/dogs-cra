@@ -1,4 +1,5 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { FirebaseError } from "@firebase/util";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./config";
 
 export interface LikedPhotos {
@@ -15,20 +16,47 @@ export async function updatePhotoAction(userId: string, photos: LikedPhotos) {
   }
 }
 
+interface UpdateFavoriteBreedActionResponse {
+  error: unknown;
+}
+
 export async function updateFavoriteBreedAction({
   userId,
   breeds,
 }: {
   userId: string;
   breeds: string[];
-}) {
+}): Promise<UpdateFavoriteBreedActionResponse> {
+  let error = null;
   try {
     await updateDoc(doc(db, "users", userId), {
       favorite_breeds: breeds,
     });
   } catch (e) {
-    console.error("Error saving favorites: ", e);
+    error = e;
   }
+  return { error };
+}
+
+interface CreateUserActionResponse {
+  result: any | null;
+  error: unknown;
+}
+
+export async function createUserAction({
+  userId,
+}: {
+  userId: string;
+}): Promise<CreateUserActionResponse> {
+  let result = null;
+  let error = null;
+
+  try {
+    result = await setDoc(doc(db, "users", userId), {});
+  } catch (e) {
+    error = e;
+  }
+  return { result, error };
 }
 
 export async function getUserDataAction(userId: string) {
@@ -40,4 +68,11 @@ export async function getUserDataAction(userId: string) {
   }
 
   return {};
+}
+
+export function formatFirebaseError(error: unknown): string {
+  if (error instanceof FirebaseError) {
+    return error.message;
+  }
+  return "something went wrong. please try again later";
 }
