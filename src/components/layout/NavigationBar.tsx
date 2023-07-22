@@ -111,7 +111,7 @@ function getActiveRoutes(loggedIn: boolean) {
     return [
       {
         id: 1,
-        label: "All Dogs",
+        label: "All Dog Breeds",
         path: "/",
       },
       {

@@ -1,4 +1,5 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { FirebaseError } from "@firebase/util";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./config";
 
 export interface LikedPhotos {
@@ -31,6 +32,27 @@ export async function updateFavoriteBreedAction({
   }
 }
 
+interface CreateUserActionResponse {
+  result: any | null;
+  error: unknown;
+}
+
+export async function createUserAction({
+  userId,
+}: {
+  userId: string;
+}): Promise<CreateUserActionResponse> {
+  let result = null;
+  let error = null;
+
+  try {
+    result = await setDoc(doc(db, "users", userId), {});
+  } catch (e) {
+    error = e;
+  }
+  return { result, error };
+}
+
 export async function getUserDataAction(userId: string) {
   const docRef = doc(db, "users", userId);
   const docSnap = await getDoc(docRef);
@@ -40,4 +62,11 @@ export async function getUserDataAction(userId: string) {
   }
 
   return {};
+}
+
+export function formatFirebaseError(error: unknown): string {
+  if (error instanceof FirebaseError) {
+    return error.message;
+  }
+  return "something went wrong. please try again later";
 }
